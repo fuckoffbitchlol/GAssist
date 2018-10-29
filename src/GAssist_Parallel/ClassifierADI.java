@@ -49,7 +49,7 @@ public class ClassifierADI
  * </p>
  */
 	
-  // The cromosome
+  // The chromosome
   int[] crm;
   int length;
   int defaultClass;
@@ -113,13 +113,20 @@ public class ClassifierADI
     int i;
     int base = 0;
     int ruleSize = ParallelGlobals.getGlobals_ADI().ruleSize;
-
+    
     for (i = 0; i < numRules; i++) {
-      if (AdaptiveRule.doMatch(crm, base, ins)) {
-        positionRuleMatch = i;
-        return crm[base + 1];
-      }
-      base += ruleSize;
+    	if (i != numRules - 1){
+    		if (AdaptiveRule.doMatch(crm, base, ins)) {
+    			positionRuleMatch = i;
+    			return crm[base + 1];
+    		}
+    		base += ruleSize;
+    	}
+    	else{
+    		if (AdaptiveRule.computeTheoryLength(crm, base) < 1){
+    			return -1;
+    		}
+    	}
     }
     if (ParallelGlobals.getGlobals_DefaultC().enabled) {
       positionRuleMatch = numRules;
