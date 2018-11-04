@@ -310,6 +310,34 @@ public class PopulationWrapper {
 
 	  ind.computePerformance(pa);
   }
+  
+  public static void evaluateClassifierTest2(Classifier[] ind, PerformanceAgent pa) {
+	  int predicted, real;
+	  InstanceWrapper[] instances;
+	  InstanceSet testSet = new InstanceSet();
+	  try {
+            testSet.readSet(Parameters.testInputFile, false);
+	  } catch(Exception e) {
+            LogManager.printErr(e.toString());
+            System.exit(1);
+	  }
+	  instances = createWrapperInstances(testSet);
+	  
+	  for(int k = 0; k < ind.length; k++) {
+	  
+		  ind[k].resetPerformance();
+		  pa.resetPerformance(ind[k].getNumRules());
+		  for (int i = 0; i < instances.length; i++) {
+			  real = instances[i].classOfInstance();
+			  predicted = ind[k].doMatch(instances[i]);
+			  pa.addPrediction(predicted, real, ind[k].getPositionRuleMatch());
+		  }
+
+		  ind[k].computePerformance(pa);
+	  }
+
+  }
+
   public static void evaluateDiversityMeasure(Classifier [] ind, double [] fitness, PerformanceAgent pa) {
 	  int real = 0;
 	  int [] predicted = new int [Parameters.parallelParts];
@@ -422,10 +450,12 @@ public class PopulationWrapper {
 
   // for ensemble model. evaluate on test data
   public static void evaluateClassifierES(Classifier [] ind, double [] fitness, PerformanceAgent pa) {
+
 	  int real = 0;
 	  int [] predicted = new int [Parameters.parallelParts];
 	  int final_pred = 0;
 	  double test_acc = 0;
+	  float [] accOntestData = new float[Parameters.parallelParts];
 	  
 	  
 	  InstanceWrapper[] instances;
@@ -446,15 +476,7 @@ public class PopulationWrapper {
 //    
 /* original gassist part*/
 
-	  double max_fit = 0;
-	  int best_cl = 0;
-	  for (int i= 0; i< fitness.length; i++) {
-		  if (fitness[i] > max_fit) {
-			  max_fit = fitness[i];
-			  best_cl = i;
-		  }
-	  }
-	  
+  
 	  int tiedCount = 0;
 	  // count instance number of each class
 	  int [] numOfInsClas = new int[Parameters.numClasses];
@@ -469,12 +491,14 @@ public class PopulationWrapper {
 
 		  for (int s = 0; s < Parameters.parallelParts; s++) {
 			  predicted[s] = ind[s].doMatch(instances[i]);
+			  if(predicted[s] == real) {
+				  accOntestData[s] += 1.0;
+			  }
 			  LogManager.println("classifier:" + s + " acc:" + fitness[s] + " clas:" + predicted[s]);
 			  if ((int)predicted[s] != -1) {
 				  pred_clas[predicted[s]] += 1;
 			  }
 		  }
-		  
 		  int max = -10000;
 		  boolean isTied = false;
 		  
@@ -495,26 +519,24 @@ public class PopulationWrapper {
 		  if (isTied == true) {
 			  tiedCount += 1;
 		  }
-		  for (int j = 0; j < Parameters.numClasses; j ++ ) {
-			  LogManager.println("clas " + j + " " + pred_clas[j]);
-		  }
 		
 		  LogManager.println("real is: " + real + " predict is: " + final_pred + " " + isTied);
 		  if (final_pred == real) {
 			  test_acc += 1.0;
 		  }
 	  }
+	  
+	  
 	  double acc = test_acc / instances.length;
 	  
-	  LogManager.println("instance Num:" + instances.length + " tied:" + tiedCount);
+	  for(int i = 0; i < Parameters.parallelParts; i++) {
+		  LogManager.println("test acc:" + accOntestData[i] / (float)instances.length);
+	  }
+//	  LogManager.println("instance Num:" + instances.length + " tied:" + tiedCount);
 	  LogManager.println("final Ensemble acc:" + acc);
-
-	  
-
-//pa.addPrediction(final_pred, real, ind[0].getPositionRuleMatch());
-//	  ind.computePerformance(pa);
   }
-
+  
+  
 
   public static void doEvaluation(Classifier[] _population, PerformanceAgent pa, int strataToUse, boolean deleteRules) {
     int popSize = _population.length;

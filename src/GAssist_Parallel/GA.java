@@ -536,15 +536,12 @@ public class GA implements Runnable {
         PopulationWrapper.ClearnErrorCnt(iteration);
        
       if (threadNo == 0) {
-      if (iteration % 1000 == 0) {
+      if (iteration % 5000 == 0) {
        
     	  String filename = "";
     	  int [][] patCnt;
 
-    	  LogManager.println("ilas error happen here");
-    	  
     	  patCnt = PopulationWrapper.getPatternCnt();
-    	  
 
     	  String tmpStr = "";
     	  for (int i = 0; i<3; i++) {

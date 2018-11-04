@@ -57,6 +57,8 @@ public class Windowing {
   InstanceWrapper[] is;
   InstanceWrapper[][] strata;
   InstanceWrapper[] allData;
+  // out of bag data use for out of bag estimation
+  InstanceWrapper[] ofbData;
   
   int [][] patErrorCnt;
   int [][] patternCnt;
@@ -162,6 +164,7 @@ public class Windowing {
   }
 
   private void createStrataEnsembleBag(Rand rn) {
+
 	Vector[] tempStrata = new Vector[numStrata];
     Vector[] instancesOfClass = new Vector[Parameters.numClasses];
 

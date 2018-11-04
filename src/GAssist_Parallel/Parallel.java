@@ -161,6 +161,12 @@ public class Parallel {
     // combine classifier of each island to form ensemble classifier
     PopulationWrapper.evaluateDiversityMeasure(inv_list, fit_list, pa);
     PopulationWrapper.evaluateClassifierES(inv_list, fit_list, pa);
+//    PopulationWrapper.evaluateClassifierTest2(inv_list, pa);
+    
+//    LogManager.println("Test acc--------------------");
+//    for (int i = 0; i < Parameters.parallelParts; i++) {
+//    	LogManager.println(i+1 +":"+inv_list[i].getAccuracy());
+//    }
     
     return bestInv;
   }
