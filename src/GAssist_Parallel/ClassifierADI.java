@@ -7,8 +7,8 @@
 	
 	F. Herrera (herrera@decsai.ugr.es)
     L. Sç–£chez (luciano@uniovi.es)
-    J. Alcal?½Fdez (jalcala@decsai.ugr.es)
-    S. Garcåƒ?(sglopez@ujaen.es)
+    J. Alcal?ï¿½Fdez (jalcala@decsai.ugr.es)
+    S. Garcï¿½?(sglopez@ujaen.es)
     A. Fernç–£dez (alberto.fernandez@ujaen.es)
     J. Luengo (julianlm@decsai.ugr.es)
 
@@ -29,8 +29,8 @@
 
 /**
  * <p>
- * @author Written by Jaume Bacardit (La Salle, Ramû¥¢ Llull University - Barcelona) 28/03/2004
- * @author Modified by Xavi Sol?½(La Salle, Ramû¥¢ Llull University - Barcelona) 23/12/2008
+ * @author Written by Jaume Bacardit (La Salle, Ramï¿½ï¿½ï¿½ Llull University - Barcelona) 28/03/2004
+ * @author Modified by Xavi Sol?ï¿½(La Salle, Ramï¿½ï¿½ï¿½ Llull University - Barcelona) 23/12/2008
  * @version 1.1
  * @since JDK1.2
  * </p>
@@ -123,8 +123,21 @@ public class ClassifierADI
     		base += ruleSize;
     	}
     	else{
-    		if (AdaptiveRule.computeTheoryLength(crm, base) < 1){
+//    		LogManager.println("tl: " + AdaptiveRule.computeTheoryLength(crm, base));
+    		boolean fuckB = false;
+    		for(int k = 0; k < Parameters.numAttributes; k++) {
+    			if (AdaptiveAttribute.dumpShit(crm, base + 2, k)) {
+    				fuckB = true;
+    			}
+    		}
+    		if (!fuckB) {
     			return -1;
+    		}
+    		else {
+    			if (AdaptiveRule.doMatch(crm, base, ins)) {
+    				positionRuleMatch = i;
+    				return crm[base + 1];
+    			}	
     		}
     	}
     }

@@ -6,10 +6,10 @@
 	Copyright (C) 2004-2010
 	
 	F. Herrera (herrera@decsai.ugr.es)
-    L. SÁñ£chez (luciano@uniovi.es)
-    J. Alcal?ΩFdez (jalcala@decsai.ugr.es)
-    S. GarcÂÉ?(sglopez@ujaen.es)
-    A. FernÁñ£dez (alberto.fernandez@ujaen.es)
+    L. SÈê§Óñ©hez (luciano@uniovi.es)
+    J. Alcal?Á¥Ωdez (jalcala@decsai.ugr.es)
+    S. GarcÈçç?(sglopez@ujaen.es)
+    A. FernÈê§Óñ™ez (alberto.fernandez@ujaen.es)
     J. Luengo (julianlm@decsai.ugr.es)
 
 	This program is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@
 
 /**
  * <p>
- * @author Written by Jaume Bacardit (La Salle, Ram˚•¢ Llull University - Barcelona) 28/03/2004
- * @author Modified by Xavi Sol?Ω(La Salle, Ram˚•¢ Llull University - Barcelona) 23/12/2008
+ * @author Written by Jaume Bacardit (La Salle, RamÓçíÔøΩ Llull University - Barcelona) 28/03/2004
+ * @author Modified by Xavi Sol?ÔøΩ(La Salle, RamÓçíÔøΩ Llull University - Barcelona) 23/12/2008
  * @version 1.1
  * @since JDK1.2
  * </p>
@@ -167,7 +167,8 @@ public class AdaptiveAttribute {
       double min = att.getMinAttribute();
       double max = att.getMaxAttribute();
       Discretizer d = DiscretizationManager.getDiscretizer(crm[base + 1]);
-
+      //-------------for test this fucking shit
+//      LogManager.println("fucking crm:" + crm[base]);
       if (crm[base] > 1) {
         int intervalCount = 0;
         int index = 0;
@@ -180,6 +181,7 @@ public class AdaptiveAttribute {
             microInt = crm[base + 2 + index * 2];
             index++;
           }
+          // valueAct == 1
           if (valueAct == 1) {
             if (oldMicroInt == 0) {
               if (index < crm[base]) {
@@ -200,9 +202,13 @@ public class AdaptiveAttribute {
           }
           oldMicroInt = microInt;
         }
-
+        
+        // if intervalCount < 1 then all rule don't care ?
         if (intervalCount > 1) {
           str += temp;
+        }
+        else {
+//        	  LogManager.println("fuck this shit assholes");
         }
       }
     }
@@ -231,6 +237,87 @@ public class AdaptiveAttribute {
     }
     return str;
   }
+  
+  public static boolean dumpShit(int[] crm, int base, int attribute) {
+    String str = "";
+    Attribute att = Attributes.getAttribute(attribute);
+    boolean FUCKBac = false;
+    String temp = "Att " + att.getName() + " is ";
+    if (ParallelGlobals.getGlobals_ADI().types[attribute] == Attribute.REAL) {
+      double min = att.getMinAttribute();
+      double max = att.getMaxAttribute();
+      Discretizer d = DiscretizationManager.getDiscretizer(crm[base + 1]);
+      //-------------for test this fucking shit
+      if (crm[base] > 1) {
+        int intervalCount = 0;
+        int index = 0;
+        int oldMicroInt = 0;
+        while (index < crm[base]) {
+          intervalCount++;
+          int microInt = 0;
+          int valueAct = crm[base + 3 + index * 2];
+          while (index < crm[base] && crm[base + index * 2 + 3] == valueAct) {
+            microInt = crm[base + 2 + index * 2];
+            index++;
+          }
+          // valueAct == 1
+//          if (valueAct == 1) {
+//            if (oldMicroInt == 0) {
+//              if (index < crm[base]) {
+//                double maxInt = d.getCutPoint(attribute, microInt - 1);
+//                temp += "[<" + maxInt + "]";
+//              }
+//            }
+//            else {
+//              double minInt = d.getCutPoint(attribute, oldMicroInt - 1);
+//              if (index == crm[base]) {
+//                temp += "[>" + minInt + "]";
+//              }
+//              else {
+//                double maxInt = d.getCutPoint(attribute, microInt - 1);
+//                temp += "[" + minInt + "," + maxInt + "]";
+//              }
+//            }
+//          }
+//          else {
+//        	  LogManager.println("fuck bacardit" + valueAct);
+//          }
+//          oldMicroInt = microInt;
+        }
+        
+        // if intervalCount < 1 then all rule don't care ?
+        if (intervalCount > 1) {
+        	FUCKBac = true;
+        }
+      }
+    }
+//    else {
+//      boolean irr = true;
+//      boolean first = true;
+//      for (int i = 0; i < crm[base]; i++) {
+//        if (crm[base + i + 2] == 1) {
+//          if (first) {
+//            temp += att.getNominalValue(i);
+//            first = false;
+//          }
+//          else {
+//            temp += "," + att.getNominalValue(i);
+//          }
+//        }
+//        else {
+//          irr = false;
+//        }
+//      }
+//
+//      if (!irr) {
+//        temp.replaceAll(",$", "");
+//        str += temp;
+//      }
+//    }
+    return FUCKBac;
+  }
+
+
 
   public static void mutation(Rand rn, int[] crm, int base, int attribute) {
     int value = rn.getInteger(0, crm[base] - 1);
